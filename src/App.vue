@@ -89,7 +89,7 @@
           </el-button>
         </el-col>
         <el-col :span="6">
-          Total: ${{round(totalSum)}}
+          Total: ${{ round(totalSum) }}
         </el-col>
       </el-row>
     </div>
@@ -110,6 +110,38 @@ export default {
   components: {},
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   data () {
+    const checkQuantity = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('Please input the quantity'))
+      }
+      setTimeout(() => {
+        if (!Number.isInteger(+value)) {
+          callback(new Error('Please input digits'))
+        } else {
+          if (+value < 1) {
+            callback(new Error('Quantity must be greater than 1'))
+          } else {
+            callback()
+          }
+        }
+      }, 1000)
+    }
+    const checkPrice = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('Please input the number'))
+      }
+      setTimeout(() => {
+        if (isNaN(+value)) {
+          callback(new Error('Please input number'))
+        } else {
+          if (+value < 1) {
+            callback(new Error('Price must be greater than 1'))
+          } else {
+            callback()
+          }
+        }
+      }, 1000)
+    }
     return {
       newData: {
         name: '',
@@ -127,25 +159,13 @@ export default {
         ],
         price: [
           {
-            required: true,
-            message: 'Please input Price',
-            trigger: 'blur'
-          },
-          {
-            min: 1,
-            message: 'Length should be greater than 1',
+            validator: checkPrice,
             trigger: 'blur'
           }
         ],
         quantity: [
           {
-            required: true,
-            message: 'Please input quantity',
-            trigger: 'blur'
-          },
-          {
-            min: 1,
-            message: 'Length should be greater than 1',
+            validator: checkQuantity,
             trigger: 'blur'
           }
         ]
